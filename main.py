@@ -41,6 +41,7 @@ def scan_playlists():
     global playlists
     if not os.path.exists(MUSIC_DIR):
         os.makedirs(MUSIC_DIR)
+    # Scans subfolders inside Music/ (like your "Test" folder)
     playlists = [d for d in os.listdir(MUSIC_DIR) if os.path.isdir(os.path.join(MUSIC_DIR, d))]
     playlists.sort()
     if not playlists:
@@ -101,19 +102,20 @@ try:
 
         # 2. Encoder Click (Enter Playlist or Go Back)
         if not GPIO.input(ENC_SW):
-            if in_menu and playlists[0] != "No Playlists Found":
-                current_playlist = playlists[selected_index]
-                folder_path = os.path.join(MUSIC_DIR, current_playlist)
-                tracks = glob.glob(os.path.join(folder_path, "*.mp3"))
-                tracks.sort()
-                
-                current_track_index = 0
-                in_menu = False
-                
-                if tracks:
-                    play_current_track()
-                else:
-                    draw_now_playing()
+            if in_menu:
+                if playlists[0] != "No Playlists Found":
+                    current_playlist = playlists[selected_index]
+                    folder_path = os.path.join(MUSIC_DIR, current_playlist)
+                    tracks = glob.glob(os.path.join(folder_path, "*.mp3"))
+                    tracks.sort()
+                    
+                    current_track_index = 0
+                    in_menu = False
+                    
+                    if tracks:
+                        play_current_track()
+                    else:
+                        draw_now_playing()
             else:
                 # Go back to menu and stop music
                 pygame.mixer.music.stop()
