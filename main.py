@@ -130,15 +130,15 @@ try:
         # 3. Play/Pause Button (BTN_PLAY on Pin 23)
         if not in_menu and not GPIO.input(BTN_PLAY):
             if tracks:
-                if pygame.mixer.music.get_busy():
-                    if is_playing:
-                        pygame.mixer.music.pause()
-                        is_playing = False
-                    else:
-                        pygame.mixer.music.unpause()
-                        is_playing = True
+                if is_playing:
+                    pygame.mixer.music.pause()
+                    is_playing = False
+                elif pygame.mixer.music.get_pos() != -1:
+                    pygame.mixer.music.unpause()
+                    is_playing = True
                 else:
                     play_current_track()
+                
                 draw_now_playing()
             while not GPIO.input(BTN_PLAY):
                 time.sleep(0.05)
